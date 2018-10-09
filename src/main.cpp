@@ -92,15 +92,91 @@ int main() {
           double psi = j[1]["psi"];
           double v = j[1]["speed"];
 
+          // (...walkthrough video: 4:41)
+          for(int i = 0; i< ptsx.size(); i++) {
+            // shift the car positions and rotate reference angle
+            double shift_x = ptsx[i] - px;
+            double shift_y = ptsy[i] - py;
+
+            ptsx[i] = (shift_x * cos(0-psi) - shift_y * sin(0-psi));
+            ptsy[i] = (shift_x * sin(0-psi) + shift_y * cos(0-psi));
+          }
+
+          // convert ptsx and ptsy from vector<double> to Eigen::VectorXd prior to calling polfit()
+          double* ptrx = &ptsx[0];
+          Eigen::Map<Eigen::vectorXd> ptsx_transform(ptrx, 6);
+
+          double* ptry = &ptsy[0];
+          Eigen::Map<Eigen::vectorXd> ptsy_transform(ptry, 6);
+
+          // fit polynomial to the transformed x and y coordinates
+          auto coeffs = polyfit(ptsx_transform, ptsy_transform, 3);// ... 3rd-order
+
+          // calculate cross track error cte
+          double cte = polyeval(coeffs, 0);
+
+          // calculate error in orientation angle epsi
+          double epsi = -atan(coeffs[1]);
+
+          // calculate steering angle
+          double steer_value = j[1]["steering_angle"];
+          double throttle_value = j[1]["throttle"];
+
+          Eigen::VectorXd state(6);
+          state << 0, 0, 0, v, cte, epsi;// ... reference frame fixed to car
+
           /*
           * TODO: Calculate steering angle and throttle using MPC.
           *
           * Both are in between [-1, 1].
           *
           */
-          double steer_value;
-          double throttle_value;
 
+          auto vars = mpc.Solve(state, coeffs);
+
+          // construct the YELLOW reference line (...line the car is trying to follow) 
+          vector<double> next_x_vals;
+          vector<double> next_y_vals;
+
+          double poly_inc = 2.5; // ... distance increment value from point to point
+          double num_points = 25; // ... number of points used to create reference line
+          for(int i = 1; i < num_points; i++) {
+            next_x_vals.push_back(poly_inc*i); // ... 2.5, 5.0, 7.5, etc.
+            next_y_vals.push_back(polyeval(coeffs, poly_inc*i)); // ... y(2.5), y(5.0), y(7.5), etc.
+          }
+
+          // construct GREEN mpc line (...walkthrough: 13:08)
+          vector<double> next_x_vals;
+          vector<double> next_y_vals;
+
+          double poly_inc = 2.5; // ... distance increment value from point to point
+          double num_points = 25; // ... number of points used to create reference line
+          for(int i = 1; i < num_points; i++) {
+            next_x_vals.push_back(poly_inc*i); // ... 2.5, 5.0, 7.5, etc.
+            next_y_vals.push_back(polyeval(coeffs, poly_inc*i)); // ... y(2.5), y(5.0), y(7.5), etc.
+          }
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          /* ------------------ BOOKMARK ---------------- */
+          
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
