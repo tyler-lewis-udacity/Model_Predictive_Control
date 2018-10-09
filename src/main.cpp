@@ -44,8 +44,7 @@ double polyeval(Eigen::VectorXd coeffs, double x) {
 // Fit a polynomial.
 // Adapted from
 // https://github.com/JuliaMath/Polynomials.jl/blob/master/src/Polynomials.jl#L676-L716
-Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals,
-                        int order) {
+Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals, int order) {
   assert(xvals.size() == yvals.size());
   assert(order >= 1 && order <= xvals.size() - 1);
   Eigen::MatrixXd A(xvals.size(), order + 1);
@@ -104,10 +103,10 @@ int main() {
 
           // convert ptsx and ptsy from vector<double> to Eigen::VectorXd prior to calling polfit()
           double* ptrx = &ptsx[0];
-          Eigen::Map<Eigen::vectorXd> ptsx_transform(ptrx, 6);
+          Eigen::Map<Eigen::VectorXd> ptsx_transform(ptrx, 6);
 
           double* ptry = &ptsy[0];
-          Eigen::Map<Eigen::vectorXd> ptsy_transform(ptry, 6);
+          Eigen::Map<Eigen::VectorXd> ptsy_transform(ptry, 6);
 
           // fit polynomial to the transformed x and y coordinates
           auto coeffs = polyfit(ptsx_transform, ptsy_transform, 3);// ... 3rd-order
@@ -134,7 +133,7 @@ int main() {
 
           auto vars = mpc.Solve(state, coeffs);
 
-          // construct the YELLOW reference line (...line the car is trying to follow) 
+          //Display the waypoints/reference line (YELLOW)
           vector<double> next_x_vals;
           vector<double> next_y_vals;
 
@@ -145,64 +144,37 @@ int main() {
             next_y_vals.push_back(polyeval(coeffs, poly_inc*i)); // ... y(2.5), y(5.0), y(7.5), etc.
           }
 
-          // construct GREEN mpc line (...walkthrough: 13:08)
-          vector<double> next_x_vals;
-          vector<double> next_y_vals;
-
-          double poly_inc = 2.5; // ... distance increment value from point to point
-          double num_points = 25; // ... number of points used to create reference line
-          for(int i = 1; i < num_points; i++) {
-            next_x_vals.push_back(poly_inc*i); // ... 2.5, 5.0, 7.5, etc.
-            next_y_vals.push_back(polyeval(coeffs, poly_inc*i)); // ... y(2.5), y(5.0), y(7.5), etc.
-          }
-
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          /* ------------------ BOOKMARK ---------------- */
-          
-          json msgJson;
-          // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
-          // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-          msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = throttle_value;
-
-          //Display the MPC predicted trajectory 
+          //Display the MPC predicted trajectory (GREEN)
           vector<double> mpc_x_vals;
           vector<double> mpc_y_vals;
 
+          for(int i = 2; i < vars.size(); i++) {
+            if(i%2 == 0){
+              mpc_x_vals.push_back(vars[i]);
+            }
+            else {
+              mpc_y_vals.push_back(vars[i]);
+            }
+          }
+
+          double Lf = 2.67; // ... where did this value come from?
+          
+          json msgJson;
+
+          // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
+          // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
+          msgJson["steering_angle"] = vars[0]/(deg2rad(25)*Lf); //used to be:  = steer_value;
+          msgJson["throttle"] = vars[1];//used to be: = throttle_value;
+
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Green line
-
           msgJson["mpc_x"] = mpc_x_vals;
           msgJson["mpc_y"] = mpc_y_vals;
 
-          //Display the waypoints/reference line
-          vector<double> next_x_vals;
-          vector<double> next_y_vals;
-
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
-
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
-
 
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
@@ -259,3 +231,8 @@ int main() {
   }
   h.run();
 }
+
+
+
+
+
