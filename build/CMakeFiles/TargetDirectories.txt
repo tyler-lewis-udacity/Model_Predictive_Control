@@ -1,0 +1,3 @@
+/home/ty/Udacity/T2/P10_model_predictive_control/build/CMakeFiles/edit_cache.dir
+/home/ty/Udacity/T2/P10_model_predictive_control/build/CMakeFiles/rebuild_cache.dir
+/home/ty/Udacity/T2/P10_model_predictive_control/build/CMakeFiles/mpc.dir
