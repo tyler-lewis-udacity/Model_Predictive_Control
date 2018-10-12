@@ -8,8 +8,8 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 10;// changed from 0. N*dt = "total time looked into future"
-double dt = 0.1;// changed from 0.  
+size_t N = 12;// changed from 0. N*dt = "total time looked into future"
+double dt = 0.08;// changed from 0.  
 
 // This value assumes the model presented in the classroom is used.
 //

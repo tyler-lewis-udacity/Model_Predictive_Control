@@ -118,16 +118,15 @@ int main() {
 
           const double Lf = 2.67; // ...distance from car's center to front bumper
 
-          /*---------------------------- */
           // latency
           const double dt = 0.1;
 
-          double pred_px = 0.0 + v * dt;
-          double pred_py = 0.0;
-          double pred_psi = 0.0 + v * -delta/Lf * dt;
-          double pred_v = v + a * dt;
-          double pred_cte = cte + v * sin(epsi) * dt;
-          double pred_epsi = epsi + v * -delta/Lf * dt;
+          double pred_px = v * dt;
+          double pred_py = 0;
+          double pred_psi = v * -delta/Lf * dt;
+          double pred_v = v;
+          double pred_cte = cte;
+          double pred_epsi = epsi;
 
           Eigen::VectorXd state(6);
           state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;// ... reference frame fixed to car

@@ -4,26 +4,31 @@ Self-Driving Car Engineer Nanodegree Program
 ---
 
 ## Rubric Points
+
 ### The Model
 
-A Model Predictive Controller (MPC) attempts to guide a vehicle along a desired path by repeatedly fitting a polynomial curve to several waypoints that lie on the desired path.  At each timestep, a new curve is fit to a new set of waypoints.  (For this particular model, each new curve is fit to the 10 nearest waypoints).  This approach allow the controller to adjust its control outputs (steering angle and acceleration) every timestep while at the same time taking into account future changes in road curviture.  
+A Model Predictive Controller (MPC) attempts to guide a vehicle along a desired path by repeatedly fitting a polynomial curve to several waypoints that lie on the desired path.  At each timestep, a new curve is fit to a new set of waypoints.  (For this particular model, each new curve is fit to the 10 nearest waypoints).  This approach allow the controller to adjust its control actuators (steering angle and acceleration) every timestep while at the same time taking into account future changes in road curviture.  
 
-The curve used for this project was a 3rd-order polynomial which provides accurate-enough approximations for road curvatures.  The curve fitting involves minimizing the "cost function".  The cost function penalizes different behaiviors like driving at innapropriate speeds, driving too far from the center lane, and making drastic changes to steering angle and acceleration from timestep to timestep.  
 The model used for this project was a kinematic model that included the vehicle's position in cartesian coordinates (x, y), its orientation (psi), its speed (v), current cross-track-error (cte) and error in the orientation angle (epsi).  Kinematic models are less accurate than dynamic models but they are easier to implement.
+
 
 ### Timestep Length and Elapsed Duration (N & dt)
 
-### Polynomial Fitting and MPC Preprocessing  
+The final values chosen for the timestep length and elapsed duration were 12 steps and 0.08 seconds respectively.  (I started with suggested values of 10 and 0.1 and modified each value several times in both directions by small increments.) 
+
+If the timestep length is increased too much, the polynomial curves do not fit well which causes the vehicle to understeer.  If the timestep length is decreased too much, the model can't update quickly enough. Decreasing the elapsed duration can lead to erradically-shaped (too "curvy") polynomial curves. Increasing elapsed duration too much results in slow reaction to changes in the road.
+
+
+### Polynomial Fitting and MPC Preprocessing 
+
+The curve used for this project was a 3rd-order polynomial which provides accurate-enough approximations for road curvatures.  The curve fitting involves minimizing the "cost function".  The cost function penalizes different behaiviors like driving at innapropriate speeds, driving too far from the center lane, and making drastic changes to steering angle and acceleration from timestep to timestep. 
+
+As suggested in Udacity's video walkthrough for the project, the waypoints were pre-processed using a coordinate transformation. The transformation had the effect of moving the car to the origin of the "world coordinate" reference frame. (Waypoints along a perfectly straight road would be oriented along the x-axis).  This makes fitting the curve easier and helps prevent problems such as the polynomial function having multiple outputs for a single input.  
+
 
 ### Model Predictive Control with Latency
 
-
-
-
-
-
-
-
+Latency between the simulator and the controller of 100ms was handled by using the state of the current time along with the amount of time (dt) from timestep to timestep to predict the future state of the vehicle.  Standard kinematic equations for position, velocity and change in time were used to forecst the vehicles position for the next timestep.  
 
 
 ## Dependencies
