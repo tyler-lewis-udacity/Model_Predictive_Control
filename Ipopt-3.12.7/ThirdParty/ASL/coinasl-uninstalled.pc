@@ -1,9 +1,0 @@
-prefix=/usr/local
-libdir=/home/ty/Udacity/T2/P10_model_predictive_control/Ipopt-3.12.7/ThirdParty/ASL
-
-Name: ASL
-Description: AMPL Solver Library
-URL: https://projects.coin-or.org/BuildTools
-Version: 1.3.6
-Libs: ${libdir}/libcoinasl.la -lm -ldl 
-Cflags: -I/home/ty/Udacity/T2/P10_model_predictive_control/Ipopt-3.12.7/ThirdParty/ASL -I/home/ty/Udacity/T2/P10_model_predictive_control/Ipopt-3.12.7/ThirdParty/ASL/solvers
