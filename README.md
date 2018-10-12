@@ -3,6 +3,29 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Rubric Points
+### The Model
+
+A Model Predictive Controller (MPC) attempts to guide a vehicle along a desired path by repeatedly fitting a polynomial curve to several waypoints that lie on the desired path.  At each timestep, a new curve is fit to a new set of waypoints.  (For this particular model, each new curve is fit to the 10 nearest waypoints).  This approach allow the controller to adjust its control outputs (steering angle and acceleration) every timestep while at the same time taking into account future changes in road curviture.  
+
+The curve used for this project was a 3rd-order polynomial which provides accurate-enough approximations for road curvatures.  The curve fitting involves minimizing the "cost function".  The cost function penalizes different behaiviors like driving at innapropriate speeds, driving too far from the center lane, and making drastic changes to steering angle and acceleration from timestep to timestep.  
+The model used for this project was a kinematic model that included the vehicle's position in cartesian coordinates (x, y), its orientation (psi), its speed (v), current cross-track-error (cte) and error in the orientation angle (epsi).  Kinematic models are less accurate than dynamic models but they are easier to implement.
+
+### Timestep Length and Elapsed Duration (N & dt)
+
+### Polynomial Fitting and MPC Preprocessing  
+
+### Model Predictive Control with Latency
+
+
+
+
+
+
+
+
+
+
 ## Dependencies
 
 * cmake >= 3.5
@@ -70,39 +93,3 @@ More information is only accessible by people who are already enrolled in Term 2
 of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/b1ff3be0-c904-438e-aad3-2b5379f0e0c3/concepts/1a2255a0-e23c-44cf-8d41-39b8a3c8264a)
 for instructions and the project rubric.
 
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
