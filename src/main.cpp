@@ -111,22 +111,25 @@ int main() {
           auto coeffs = polyfit(ptsx_transform, ptsy_transform, 3);// ... 3rd-order
 
           // calculate cross track error cte
-          double cte = polyeval(coeffs, 0);
+          double cte = polyeval(coeffs, 0); // = desired_y - actual_y
 
           // calculate error in orientation angle epsi
-          double epsi = -atan(coeffs[1]);
+          double epsi = -atan(coeffs[1]); // = actural_psi - desired_psi
 
           const double Lf = 2.67; // ...distance from car's center to front bumper
 
           // latency
-          const double dt = 0.1;
+          const int latency = 0.1;
+          delta *= -1;// left turn corresponds to negative sign
+          //v *= 0.44704;// convert to meter per second
+          psi = 0;
 
-          double pred_px = v * dt;
+          double pred_px = v * latency;
           double pred_py = 0;
-          double pred_psi = v * -delta/Lf * dt;
-          double pred_v = v;
-          double pred_cte = cte;
+          double pred_cte = cte + v * sin(epsi)*latency;
           double pred_epsi = epsi;
+          double pred_psi = v * delta/Lf * latency;
+          double pred_v = v + a * latency;
 
           Eigen::VectorXd state(6);
           state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;// ... reference frame fixed to car
@@ -191,7 +194,7 @@ int main() {
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
-          this_thread::sleep_for(chrono::milliseconds(100));
+          this_thread::sleep_for(chrono::milliseconds(latency));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {

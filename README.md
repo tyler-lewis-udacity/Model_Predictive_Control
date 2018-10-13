@@ -9,7 +9,9 @@ Self-Driving Car Engineer Nanodegree Program
 
 A Model Predictive Controller (MPC) attempts to guide a vehicle along a desired path by repeatedly fitting a polynomial curve to several waypoints that lie on the desired path.  At each timestep, a new curve is fit to a new set of waypoints.  (For this particular model, each new curve is fit to the 10 nearest waypoints).  This approach allow the controller to adjust its control actuators (steering angle and acceleration) every timestep while at the same time taking into account future changes in road curviture.  
 
-The model used for this project was a kinematic model that included the vehicle's position in cartesian coordinates (x, y), its orientation (psi), its speed (v), current cross-track-error (cte) and error in the orientation angle (epsi).  Kinematic models are less accurate than dynamic models but they are easier to implement.
+The model used for this project was a kinematic model that included the vehicle's position in cartesian coordinates (x, y), its orientation (psi), its speed (v), current cross-track-error (cte) and error in the orientation angle (epsi).  Kinematic models are less accurate than dynamic models but they are easier to implement.  The update equations are shown below:
+
+![Kinematic Equations](./img/equations_1.png)
 
 
 ### Timestep Length and Elapsed Duration (N & dt)
