@@ -119,16 +119,16 @@ int main() {
           const double Lf = 2.67; // ...distance from car's center to front bumper
 
           // latency
-          const int latency = 0.1;
-          delta *= -1;// left turn corresponds to negative sign
+          const float latency = 0.1;
+          //delta *= -1;// left turn corresponds to negative sign
           //v *= 0.44704;// convert to meter per second
-          psi = 0;
+          //psi = 0;
 
           double pred_px = v * latency;
           double pred_py = 0;
           double pred_cte = cte + v * sin(epsi)*latency;
           double pred_epsi = epsi;
-          double pred_psi = v * delta/Lf * latency;
+          double pred_psi = v * -delta/Lf * latency;
           double pred_v = v + a * latency;
 
           Eigen::VectorXd state(6);
@@ -194,7 +194,7 @@ int main() {
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
-          this_thread::sleep_for(chrono::milliseconds(latency));
+          this_thread::sleep_for(chrono::milliseconds(100));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {
